@@ -126,7 +126,7 @@ def eval(model, test_dataset, device, n_test_relation):
 
 if __name__ == '__main__':
 
-    device = 'cuda'
+    device = 'cpu'
 
     model = BertREGraph(config.bert_dir, 10)
     model.to(device)
