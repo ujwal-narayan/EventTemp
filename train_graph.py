@@ -16,6 +16,9 @@ torch.autograd.set_detect_anomaly(True)
 
 from util import save_model, load_model
 
+import wandb
+
+wandb.init(project="EventTemp")
 def list_to_entropy(l): # less is better
     a = {}
     for e in l:
@@ -154,17 +157,18 @@ if __name__ == '__main__':
         for batch in train_dataset.get_tqdm(device, True):
             data_x, data_y, data_e1, data_e2, graphs, edge_types, example = batch
             logits, loss = model(data_x, data_e1, data_e2, data_y, graphs, edge_types)
-
+            wandb.watch(model)
+            wandb.log({'loss':loss})
             loss.backward()
             #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
             scheduler.step()
             model.zero_grad()
-
+        
         if i % 5 == 0:
             model.eval()
             n_gold, n_predict, n_correct, precision, recall, f1 = eval(model, dev_dataset, device, n_test_relation)
-
+            wandb.log({"precision":precision,"recall":recall,"f1":f1})
             if f1 > max_f1:
                 max_f1 = f1
                 print('saving....', f1)
