@@ -140,7 +140,7 @@ if __name__ == '__main__':
     lr = 3e-5
     num_total_steps = 5000
     num_warmup_steps = 0
-    batch_size = 4
+    batch_size = 3
 
     train_examples, dev_examples, test_examples, n_train_relation, n_dev_relation, n_test_relation = generate_examples()
 
@@ -160,13 +160,14 @@ if __name__ == '__main__':
         for batch in train_dataset.get_tqdm(device, True):
             data_x, data_y, data_e1, data_e2, graphs, edge_types, example = batch
             logits, loss = model(data_x, data_e1, data_e2, data_y, graphs, edge_types)
-            wandb.watch(model)
-            wandb.log({'loss':loss})
+            
             loss.backward()
             #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
             scheduler.step()
             model.zero_grad()
+        wandb.watch(model)
+        wandb.log({'loss':loss})
         
         if i % 5 == 0:
             model.eval()
