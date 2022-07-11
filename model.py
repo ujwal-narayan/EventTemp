@@ -60,7 +60,7 @@ class BertREGraph(nn.Module):
             10,   # mid
             768,  # output
             8,    # n_edge
-            -1,
+            0,
             5,    # layers
             0.5,
             True
