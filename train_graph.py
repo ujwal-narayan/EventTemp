@@ -4,6 +4,8 @@ import dgl
 from tqdm import tqdm, trange
 from scipy.stats import entropy
 from transformers import AdamW, get_linear_schedule_with_warmup
+import torch.nn as nn
+
 
 from model import BertREGraph
 from dataset import DatasetGraphImputation, DatasetGraphTest
