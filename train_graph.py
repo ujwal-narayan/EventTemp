@@ -132,12 +132,13 @@ if __name__ == '__main__':
     device = 'cuda'
 
     model = BertREGraph(config.bert_dir, 10)
+    model= nn.DataParallel(model)
     model.to(device)
 
     lr = 3e-5
     num_total_steps = 5000
     num_warmup_steps = 0
-    batch_size = 1
+    batch_size = 4
 
     train_examples, dev_examples, test_examples, n_train_relation, n_dev_relation, n_test_relation = generate_examples()
 
