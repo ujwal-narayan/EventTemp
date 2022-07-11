@@ -33,7 +33,7 @@ def compute_uncertainty(model, data_x, data_e1, data_e2, data_y, graphs, edge_ty
         res.append(result)
     res = np.asarray(res)  # 5, batch_size
     res = np.transpose(res, (1, 0))  # batchsize, 5
-    
+
     result = [list_to_entropy(x) for x in res]  ### -?????
     return np.asarray(result)
 
@@ -54,13 +54,13 @@ def eval(model, test_dataset, device, n_test_relation):
 
             alread_predicted = {}
             temp_predicted = [0] * len(data_y)
-            
+
             for _ in trange(len(data_y)):  ###
-                
-                u, v = np.asarray(src), np.asarray(tgt)
-                g = dgl.DGLGraph((u, v))
+
+                g = dgl.DGLGraph((src, tgt))
+                g = g.to(device)
                 graphs = [g]
-                
+
                 f = torch.LongTensor
                 edge_types = [f(edge_type).to(device)]
 
@@ -95,7 +95,7 @@ def eval(model, test_dataset, device, n_test_relation):
             exp_id, tokens, events, subword_ids, ann_event_relations, exp, exp2, _ = elem
             for e in exp2:
                 event_ids.append((exp_id, e[0], e[1]))
-        
+
         p_set = {}
 
         n_gold = n_test_relation
@@ -110,15 +110,15 @@ def eval(model, test_dataset, device, n_test_relation):
 
             # if g > 0:
             #     n_gold += 1
-            if p > 0 and g > 0:  ### note here ..... 
+            if p > 0 and g > 0:  ### note here .....
                 n_predict += 1
             if p == g and g > 0:
                 n_correct += 1
-        
+
         precision = n_correct/ (n_predict + 1e-200)
         recall = n_correct/n_gold
         f1 =  2* precision * recall / (precision + recall + 1e-200)
- 
+
         print('###################', n_gold, n_predict, n_correct, precision, recall, f1)
 
         return n_gold, n_predict, n_correct, precision, recall, f1
@@ -126,7 +126,7 @@ def eval(model, test_dataset, device, n_test_relation):
 
 if __name__ == '__main__':
 
-    device = 'cpu'
+    device = 'cuda'
 
     model = BertREGraph(config.bert_dir, 10)
     model.to(device)
@@ -152,15 +152,15 @@ if __name__ == '__main__':
     for i in range(0, num_total_steps):
         model.train()
         for batch in train_dataset.get_tqdm(device, True):
-            data_x, data_y, data_e1, data_e2, graphs, edge_types, example = batch        
+            data_x, data_y, data_e1, data_e2, graphs, edge_types, example = batch
             logits, loss = model(data_x, data_e1, data_e2, data_y, graphs, edge_types)
-                
+
             loss.backward()
             #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
             scheduler.step()
             model.zero_grad()
-        
+
         if i % 5 == 0:
             model.eval()
             n_gold, n_predict, n_correct, precision, recall, f1 = eval(model, dev_dataset, device, n_test_relation)
