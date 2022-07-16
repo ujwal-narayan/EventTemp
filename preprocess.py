@@ -119,13 +119,13 @@ def _coref_chain_to_sub_word_idx(coref_chain, origin_to_subidx):
 
 def build_all_example():
 
-    # ann_train_file = 'data/TDDiscourse/TDDMan/TDDManTrain.tsv'
-    # ann_dev_file = 'data/TDDiscourse/TDDMan/TDDManDev.tsv'
-    # ann_test_file = 'data/TDDiscourse/TDDMan/TDDManTest.tsv'
+    ann_train_file = 'data/TDDiscourse/TDDMan/TDDManTrain.tsv'
+    ann_dev_file = 'data/TDDiscourse/TDDMan/TDDManDev.tsv'
+    ann_test_file = 'data/TDDiscourse/TDDMan/TDDManTest.tsv'
 
-    ann_train_file = 'data/TDDiscourse/TDDAuto/TDDAutoTrain.tsv'
-    ann_dev_file = 'data/TDDiscourse/TDDAuto/TDDAutoDev.tsv'
-    ann_test_file = 'data/TDDiscourse/TDDAuto/TDDAutoTest.tsv'
+#     ann_train_file = 'data/TDDiscourse/TDDAuto/TDDAutoTrain.tsv'
+#     ann_dev_file = 'data/TDDiscourse/TDDAuto/TDDAutoDev.tsv'
+#     ann_test_file = 'data/TDDiscourse/TDDAuto/TDDAutoTest.tsv'
 
     ann_train = read_annotation(ann_train_file)
     ann_dev = read_annotation(ann_dev_file)
