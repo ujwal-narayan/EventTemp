@@ -166,13 +166,14 @@ if __name__ == '__main__':
             scheduler.step()
             model.zero_grad()
         wandb.watch(model)
+        wandb.log({'loss':torch.round(loss,decimals=3)})
 
         
         if i % 5 == 0:
             model.eval()
             n_gold, n_predict, n_correct, precision, recall, f1 = eval(model, dev_dataset, device, n_test_relation)
             wandb.log({"precision":round(precision,3),"recall":round(recall,3),"f1":round(f1,3)})
-            wandb.log({'loss':torch.round(loss,3)})
+           
             if f1 > max_f1:
                 max_f1 = f1
                 print('saving....', f1)
